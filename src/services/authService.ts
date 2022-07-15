@@ -31,16 +31,15 @@ async function login(loginData:UserInsertData){
             userId: foundUser.id,
             email: email
         },
-        process.env.JWT_SECRET,
-        {
-            expiresIn: 300000
-        }
+        process.env.JWT_SECRET
+        ,{expiresIn: 300000}
     )
     const session: SessionInsertData = {
         email:email,
         token: token
     }
     await authRepository.newSession(session)
+
     return {token: token}
 }
 

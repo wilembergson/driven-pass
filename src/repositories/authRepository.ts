@@ -19,9 +19,10 @@ async function findUser(email:string){
 }
 
 async function newSession(session: SessionInsertData){
-    return await prisma.session.create({
+    const result = await prisma.session.create({
          data: session
      })
+     return result
  }
 const authRepository = {
     newUser,
