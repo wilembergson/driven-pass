@@ -9,8 +9,16 @@ async function newUser(user: UserInsertData){
     })
 }
 
+async function findUser(email:string) {
+    return await prisma.user.findUnique({
+        where:{
+            email: email
+        }
+    })
+}
 const authRepository = {
-    newUser
+    newUser,
+    findUser
 }
 
 export default authRepository
