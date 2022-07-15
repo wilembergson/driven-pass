@@ -1,28 +1,51 @@
 import bcrypt from "bcrypt"
+import jwt from "jsonwebtoken"
 
-import authRepository, { UserInsertData } from "../repositories/authRepository.js";
-import Error from "../utils/error.js"
-import messageReturn from "../utils/returnMessage.js";
+import authRepository, { SessionInsertData, UserInsertData } from "../repositories/authRepository.js";
+import ErrorMessage from "../utils/errorMessage.js"
+import sucessMessage from "../utils/sucessMessage.js";
 
 async function newUser(user:UserInsertData) {
     const {email, password} = user
-    await existingUser(email)
+    const foundUser = await authRepository.findUser(email)
+    if(foundUser) ErrorMessage(401, "Já existe um usuário com o email informado.")
+    
     const cryptedPassword = bcrypt.hashSync(password, 10)
     const newUser: UserInsertData = {
         email: email,
         password: cryptedPassword
     }
     const result = await authRepository.newUser(newUser)
-    if(!result) Error(422, "Não foi possível registrar um novo usuário.")
-    return messageReturn("Novo usuário criado. Faça o login.")
+    if(!result) ErrorMessage(422, "Não foi possível registrar um novo usuário.")
+    return sucessMessage("Novo usuário criado. Faça o login.")
 }
 
-async function existingUser(email:string) {
-    const user = await authRepository.findUser(email)
-    if(user) Error(401, "Já existe um usuário com o email informado.")
+async function login(loginData:UserInsertData){
+    const {email, password} = loginData
+    const foundUser = await authRepository.findUser(email)
+    if(!foundUser) ErrorMessage(404, "Email não encontrado.")
+    const checkPassword = bcrypt.compareSync(password, foundUser.password)
+    if(!checkPassword) ErrorMessage(401, "Senha incorreta.")
+    const token = jwt.sign(
+        {
+            userId: foundUser.id,
+            email: email
+        },
+        process.env.JWT_SECRET,
+        {
+            expiresIn: 300000
+        }
+    )
+    const session: SessionInsertData = {
+        email:email,
+        token: token
+    }
+    await authRepository.newSession(session)
+    return {token: token}
 }
 
 const authService = {
-    newUser
+    newUser,
+    login
 }
 export default authService

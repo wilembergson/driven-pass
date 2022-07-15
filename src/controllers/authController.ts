@@ -8,3 +8,10 @@ export async function createNewUser(req: Request, res: Response){
     const result = await authService.newUser(newUser)
     return res.status(201).json(result)
 }
+
+export async function login(req: Request, res: Response){
+    const {email, password} = req.body
+    const loginData: UserInsertData = {email, password}
+    const result = await authService.login(loginData)
+    return res.status(200).json(result)
+}

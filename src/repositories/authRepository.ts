@@ -1,7 +1,8 @@
 import prisma from "../config/database.js";
-import { User } from "@prisma/client";
+import { Session, User } from "@prisma/client";
 
 export type UserInsertData = Omit<User, "id">
+export type SessionInsertData = Omit<Session, "id"|"createdAt">
 
 async function newUser(user: UserInsertData){
    return await prisma.user.create({
@@ -9,16 +10,23 @@ async function newUser(user: UserInsertData){
     })
 }
 
-async function findUser(email:string) {
+async function findUser(email:string){
     return await prisma.user.findUnique({
         where:{
             email: email
         }
     })
 }
+
+async function newSession(session: SessionInsertData){
+    return await prisma.session.create({
+         data: session
+     })
+ }
 const authRepository = {
     newUser,
-    findUser
+    findUser,
+    newSession
 }
 
 export default authRepository
