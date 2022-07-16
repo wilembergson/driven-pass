@@ -38,7 +38,7 @@ async function findCredentialsByURL(url: string, userId:number){
     return credentials
 }
 
-async function findCredentialsByTitle(title: string, userId: number){
+async function findByTitle(title: string, userId: number){
     const credentials: Credentials[] = await prisma.credentials.findMany({
         where:{
             title,
@@ -60,7 +60,7 @@ async function deleteCredential(id: number, userId:number){
 const credentialsRepository = {
     newCredential,
     findCredentialsByURL,
-    findCredentialsByTitle,
+    findByTitle,
     listCredentials,
     findCredentialsById,
     deleteCredential

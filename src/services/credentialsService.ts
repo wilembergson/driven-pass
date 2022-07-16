@@ -2,12 +2,13 @@
 import { Credentials } from "@prisma/client"
 import Cryptr from "cryptr"
 import credentialsRepository, { CredentialsInsertData } from "../repositories/credentialsRepository.js"
+import checkRepeatedTitle from "../utils/checkRepeatedTitle.js"
 import ErrorMessage from "../utils/errorMessage.js"
 import sucessMessage from "../utils/sucessMessage.js"
 
 async function newCredential(credential:CredentialsInsertData) {
     await checkSite(credential.url, credential.userId)
-    await checkRepeatedTitle(credential.title, credential.userId)
+    await checkRepeatedTitle(credentialsRepository, credential.title, credential.userId)
 
     const cryptSecret = process.env.CRYPT_SECRET
     const CRYPT = new Cryptr(cryptSecret)
@@ -29,11 +30,6 @@ async function checkSite(url:string, userId:number) {
     if(credentials.length === 2 ) ErrorMessage(401, "Já existem duas credenciais para este site.")
 }
 
-async function checkRepeatedTitle(title: string, userId: number) {
-    const credenciais = await credentialsRepository.findCredentialsByTitle(title, userId)
-    if(credenciais.length === 1) ErrorMessage(401, "Já existe uma credencial com este título.")
-}
-
 async function listCredentials(id:number, userId: number) {
     let list: Credentials[] = []
     if(!id){
@@ -49,9 +45,7 @@ async function listCredentials(id:number, userId: number) {
 
 async function decodePasswords(list:Credentials[]) {
     const cryptr = new Cryptr(process.env.CRYPT_SECRET)
-    const decodedList = []
-
-    
+    const decodedList = []  
     list.forEach(el => {
         const decodedPassword = cryptr.decrypt(el.password)
         el.password = decodedPassword
