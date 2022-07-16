@@ -18,8 +18,40 @@ async function findByTitle(title: string, userId: number){
     return credentials
 }
 
+async function listNotes(userId:number){
+    const notes: Note[] = await prisma.note.findMany({
+        where:{
+            userId
+        }
+    })
+    return notes
+}
+
+async function findNoteById(id:number, userId:number){
+    const notes: Note[] = await prisma.note.findMany({
+        where:{
+            id,
+            userId
+        }
+    })
+    return notes
+}
+
+async function deleteNote(id: number, userId:number){
+    const note = await prisma.note.deleteMany({
+        where:{
+            id,
+            userId
+        }
+    })
+    return note.count
+}
+
 const noteRepository = {
     newNote,
-    findByTitle
+    findByTitle,
+    listNotes,
+    findNoteById,
+    deleteNote
 }
 export default noteRepository
