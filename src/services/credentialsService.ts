@@ -59,8 +59,17 @@ async function decodePasswords(list:Credentials[]) {
     })
     return decodedList
 }
+
+async function deleteCredential(id:number, userId: number) {
+    if(!id) ErrorMessage(404, "Insira o ID da credencial.")
+    const result = await credentialsRepository.deleteCredential(id, userId)
+    if(result === 0) ErrorMessage(401, "Você está tentando deletar uma credencial que não tem permissão ou não existe.")
+    return sucessMessage("Credencial deletada com sucesso.")
+}
+
 const credentialsService = {
     newCredential,
-    listCredentials
+    listCredentials,
+    deleteCredential
 }
 export default credentialsService

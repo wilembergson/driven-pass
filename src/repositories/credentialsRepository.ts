@@ -47,11 +47,22 @@ async function findCredentialsByTitle(title: string, userId: number){
     })
     return credentials
 }
+
+async function deleteCredential(id: number, userId:number){
+    const credentials = await prisma.credentials.deleteMany({
+        where:{
+            id,
+            userId
+        }
+    })
+    return credentials.count
+}
 const credentialsRepository = {
     newCredential,
     findCredentialsByURL,
     findCredentialsByTitle,
     listCredentials,
-    findCredentialsById
+    findCredentialsById,
+    deleteCredential
 }
 export default credentialsRepository
