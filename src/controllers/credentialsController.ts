@@ -18,3 +18,11 @@ export async function createNewCredential(req: Request, res: Response){
     const result = await credentialsService.newCredential(credential)
     return res.status(201).json(result)
 }
+
+export async function listCredentials(req: Request, res: Response){
+    const {id} = req.params
+    const authorization = req.headers.authorization
+    const userId:number = await getInfoFromToken(authorization)
+    const result  = await credentialsService.listCredentials(parseInt(id), userId)
+    return res.status(200).json(result)
+}

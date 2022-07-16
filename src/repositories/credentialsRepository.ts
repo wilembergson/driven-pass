@@ -9,6 +9,25 @@ async function newCredential(credential:CredentialsInsertData) {
     })
 }
 
+async function listCredentials(userId:number){
+    const credentials: Credentials[] = await prisma.credentials.findMany({
+        where:{
+            userId
+        }
+    })
+    return credentials
+}
+
+async function findCredentialsById(id: number, userId:number){
+    const credentials: Credentials[] = await prisma.credentials.findMany({
+        where:{
+            id,
+            userId
+        }
+    })
+    return credentials
+}
+
 async function findCredentialsByURL(url: string, userId:number){
     const credentials: Credentials[] = await prisma.credentials.findMany({
         where:{
@@ -31,6 +50,8 @@ async function findCredentialsByTitle(title: string, userId: number){
 const credentialsRepository = {
     newCredential,
     findCredentialsByURL,
-    findCredentialsByTitle
+    findCredentialsByTitle,
+    listCredentials,
+    findCredentialsById
 }
 export default credentialsRepository

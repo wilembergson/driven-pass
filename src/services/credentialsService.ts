@@ -1,4 +1,5 @@
 
+import { Credentials } from "@prisma/client"
 import Cryptr from "cryptr"
 import credentialsRepository, { CredentialsInsertData } from "../repositories/credentialsRepository.js"
 import ErrorMessage from "../utils/errorMessage.js"
@@ -32,7 +33,34 @@ async function checkRepeatedTitle(title: string, userId: number) {
     const credenciais = await credentialsRepository.findCredentialsByTitle(title, userId)
     if(credenciais.length === 1) ErrorMessage(401, "Já existe uma credencial com este título.")
 }
+
+async function listCredentials(id:number, userId: number) {
+    let list: Credentials[] = []
+    if(!id){
+        list = await credentialsRepository.listCredentials(userId)
+    }else{
+        list = await credentialsRepository.findCredentialsById(id, userId)
+    }
+    if(list.length === 0) ErrorMessage(401, "Você não tem permissão para acessar esta credencial ou ela não existe.")
+    
+    const result = await decodePasswords(list)
+    return result
+}
+
+async function decodePasswords(list:Credentials[]) {
+    const cryptr = new Cryptr(process.env.CRYPT_SECRET)
+    const decodedList = []
+
+    
+    list.forEach(el => {
+        const decodedPassword = cryptr.decrypt(el.password)
+        el.password = decodedPassword
+        decodedList.push(el)
+    })
+    return decodedList
+}
 const credentialsService = {
-    newCredential
+    newCredential,
+    listCredentials
 }
 export default credentialsService
