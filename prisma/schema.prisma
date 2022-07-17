@@ -16,6 +16,8 @@ model User {
   password String
   Credentials Credentials[]
   Notes Note[]
+  Cards Card[]
+  Wifi Wifi[]
 
   @@map("users")
 }
@@ -49,4 +51,29 @@ model Note {
   user User @relation(fields: [userId], references: [id])
 
   @@map("notes")
+}
+
+model Card {
+  id Int @id @default(autoincrement())
+  number Int @unique
+  name String
+  securityCode Int
+  expirationDate String
+  password String
+  isVirtual Boolean
+  type String
+  userId Int
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("cards")
+}
+
+model Wifi{
+  id Int @id @default(autoincrement())
+  title String
+  password String
+  userId Int
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("wifi")
 }
