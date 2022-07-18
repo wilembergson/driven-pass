@@ -57,7 +57,7 @@ model Card {
   id Int @id @default(autoincrement())
   number Int @unique
   name String
-  securityCode Int
+  securityCode String
   expirationDate String
   password String
   isVirtual Boolean

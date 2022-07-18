@@ -1,4 +1,3 @@
-
 import { Credentials } from "@prisma/client"
 import Cryptr from "cryptr"
 import credentialsRepository, { CredentialsInsertData } from "../repositories/credentialsRepository.js"
@@ -49,6 +48,10 @@ export async function decodePasswords(list:any[]) {
     list.forEach(el => {
         const decodedPassword = cryptr.decrypt(el.password)
         el.password = decodedPassword
+        if(el.securityCode){
+            const decodedCode = cryptr.decrypt(el.securityCode)
+            el.securityCode = decodedCode
+        }
         decodedList.push(el)
     })
     return decodedList

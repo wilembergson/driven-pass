@@ -38,7 +38,7 @@ async function findCardById(id:number, userId:number){
     return cards
 }
 
-async function deleteNote(id: number, userId:number){
+async function deleteCard(id: number, userId:number){
     const card = await prisma.card.deleteMany({
         where:{
             id,
@@ -53,6 +53,6 @@ const cardRepository = {
     findByTitle,
     listCards,
     findCardById,
-    deleteNote
+    deleteCard
 }
 export default cardRepository
