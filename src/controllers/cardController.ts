@@ -10,7 +10,7 @@ export async function createNewCard(req: Request, res: Response){
     const card: CardInsertData = {
         number,
         name,
-        securityCode,
+        securityCode: securityCode.toString(),
         expirationDate,
         password,
         isVirtual,

@@ -14,6 +14,10 @@ async function newCard(card:CardInsertData) {
     const cryptedPassword = CRYPT.encrypt(card.password)
     const securityCode = CRYPT.encrypt(card.securityCode)
 
+    if(card.type !== "credito" && card.type !== "debito" && card.type !== "ambos"){
+        return ErrorMessage(401, "O tipo do cartão só pode ser credito, debito ou ambos.")
+    }
+
     const newCard: CardInsertData = {
         number: card.number,
         name: card.name,
@@ -35,7 +39,7 @@ async function listCards(id:number, userId: number) {
     }else{
         list = await cardRepository.findCardById(id, userId)
     }
-    if(list.length === 0) ErrorMessage(401, "Você não tem permissão para acessar este cartão ou ela não existe.")
+    if(list.length === 0) ErrorMessage(401, "Você não tem permissão para acessar este cartão ou ele não existe.")
     
     const result = await decodePasswords(list)
     return result
