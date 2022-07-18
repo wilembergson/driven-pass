@@ -3,7 +3,7 @@ import prisma from "../config/database.js"
 
 export type WifiInsertData = Omit<Wifi, "id">
 
-async function newCard(wifi:WifiInsertData) {
+async function newWifi(wifi:WifiInsertData) {
     return await prisma.wifi.create({
         data: wifi
     })
@@ -37,7 +37,7 @@ async function findWifiById(id:number, userId:number){
     return cards
 }
 
-async function deleteNote(id: number, userId:number){
+async function deleteWifi(id: number, userId:number){
     const wifi = await prisma.wifi.deleteMany({
         where:{
             id,
@@ -47,11 +47,11 @@ async function deleteNote(id: number, userId:number){
     return wifi.count
 }
 
-const cardRepository = {
-    newCard,
+const wifiRepository = {
+    newWifi,
     findByTitle,
     listWifi,
     findWifiById,
-    deleteNote
+    deleteWifi
 }
-export default cardRepository
+export default wifiRepository

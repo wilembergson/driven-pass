@@ -43,7 +43,7 @@ async function listCredentials(id:number, userId: number) {
     return result
 }
 
-async function decodePasswords(list:Credentials[]) {
+export async function decodePasswords(list:any[]) {
     const cryptr = new Cryptr(process.env.CRYPT_SECRET)
     const decodedList = []  
     list.forEach(el => {
