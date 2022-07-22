@@ -41,4 +41,20 @@ describe("POST /newuser", () => {
         const response = await supertest(app).post("/newuser").send(user);
         expect(response.status).toEqual(422);
       });
+
+      it("should answer with status 400 when credentials are valid", async () => {
+        const user = {
+          email: "test2@gmail.com"
+        };
+        const response = await supertest(app).post("/newuser").send(user);
+        expect(response.status).toEqual(422);
+      });
+
+      it("should answer with status 400 when credentials are valid", async () => {
+        const user = {
+          password: "doda123456"
+        };
+        const response = await supertest(app).post("/newuser").send(user);
+        expect(response.status).toEqual(422);
+      });
   });
